@@ -1,16 +1,14 @@
 {
   "compilerOptions": {
-    "module": "es6",
+    "module": "commonjs",
     "esModuleInterop": true,
     "target": "es5",
     "noImplicitAny": true,
+    "skipLibCheck": true,
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
     "baseUrl": ".",
-    "types": [
-      "jest"
-    ],
     "typeRoots": [
       "node_modules/@types"
     ],
