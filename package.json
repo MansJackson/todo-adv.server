@@ -2,17 +2,33 @@
   "name": "todo-adv.server",
   "version": "0.0.1",
   "description": "server for my ambitious todo app",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
+    "build": "tsc -w",
+    "dev": "nodemon --watch dist",
+    "prestart": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint **/*.ts --ext .ts --fix",
     "test": "jest ."
   },
   "author": "Måns Jackson",
   "license": "ISC",
-  "homepage": "https://github.com/MansJackson/todo-adv.server#readme",
   "dependencies": {
     "express": "^4.17.1",
     "morgan": "^1.10.0",
     "socket.io": "^3.0.0",
     "uuid": "^8.3.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.8",
+    "@types/node": "^14.14.6",
+    "@types/socket.io": "^2.1.11",
+    "@typescript-eslint/eslint-plugin": "^4.6.1",
+    "@typescript-eslint/parser": "^4.6.1",
+    "eslint": "^7.12.1",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-airbnb-typescript": "^12.0.0",
+    "eslint-plugin-import": "^2.22.1",
+    "typescript": "^4.0.5"
   }
 }
