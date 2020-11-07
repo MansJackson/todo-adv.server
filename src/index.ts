@@ -4,7 +4,7 @@ import { Server } from 'socket.io';
 import morgan from 'morgan';
 import fs from 'fs';
 import path from 'path';
-import cors from 'cors';
+import cors, { CorsOptions } from 'cors';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import indexRoutes from './routes';
@@ -15,15 +15,16 @@ const app = express();
 const srv = http.createServer(app);
 const io = new Server(srv);
 const accessLogStream = fs.createWriteStream(path.join(__dirname, '../', 'logs', 'access.log'), { flags: 'a' });
-const corsOptions = {
-  origin: 'http://localhost:3000'
-}
+const corsOptions: CorsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true,
+};
 config(io);
 
-app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cookieParser());
+app.use(cors(corsOptions));
 
 const shutDown = () => {
   io.sockets.emit('shut-down', 'The server has been shut down');

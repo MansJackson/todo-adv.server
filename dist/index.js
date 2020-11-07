@@ -20,13 +20,14 @@ var srv = http_1.default.createServer(app);
 var io = new socket_io_1.Server(srv);
 var accessLogStream = fs_1.default.createWriteStream(path_1.default.join(__dirname, '../', 'logs', 'access.log'), { flags: 'a' });
 var corsOptions = {
-    origin: 'http://localhost:3000'
+    origin: 'http://localhost:3000',
+    credentials: true,
 };
 socketConfig_1.default(io);
-app.use(cors_1.default(corsOptions));
+app.use(cookie_parser_1.default());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(body_parser_1.default.json());
-app.use(cookie_parser_1.default());
+app.use(cors_1.default(corsOptions));
 var shutDown = function () {
     io.sockets.emit('shut-down', 'The server has been shut down');
     io.close(function () { return srv.close(); });
@@ -36,6 +37,12 @@ var shutDown = function () {
 };
 app.use(morgan_1.default(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :url :status :response-time ms - :res[content-length]', { stream: accessLogStream }));
 app.use('/api', routes_1.default);
+app.use(function (err, req, res, next) {
+    console.error(err.stack);
+    console.log('error handler triggered');
+    res.status(500).json({ message: 'something broke' });
+    next();
+});
 process.on('SIGINT', function () {
     shutDown();
 });

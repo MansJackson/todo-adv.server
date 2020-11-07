@@ -10,7 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.emailExists = exports.isValidEmail = exports.getUserByEmail = exports.createUser = exports.writeFile = exports.getFile = void 0;
+exports.emailExists = exports.isValidEmail = exports.isValidUser = exports.getUserByEmail = exports.createUser = exports.writeFile = exports.getFile = void 0;
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
 exports.getFile = function (fileName) {
@@ -52,9 +52,22 @@ exports.getUserByEmail = function (email) {
         return user;
     return false;
 };
+exports.isValidUser = function (user) {
+    if (user.name.length < 3)
+        return false;
+    if (!exports.isValidEmail(user.email))
+        return false;
+    if (user.password.length < 8)
+        return false;
+    if (user.passwordConf !== user.password)
+        return false;
+    return true;
+};
 exports.isValidEmail = function (email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); };
 exports.emailExists = function (email) {
     var db = exports.getFile('db.json');
+    if (!db.users)
+        return false;
     var match = db.users.find(function (el) { return el.email === email; });
     if (match)
         return true;

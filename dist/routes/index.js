@@ -58,33 +58,43 @@ var dotenv_1 = __importDefault(require("dotenv"));
 var util_1 = require("../util");
 dotenv_1.default.config();
 var router = express_1.default.Router();
+router.get('/valid_cookie', function (req, res) {
+    var cookie = req.cookies.juid;
+    try {
+        var decoded = jsonwebtoken_1.default.verify(cookie, process.env.JWT_SECRET);
+        console.log(decoded);
+        res.status(200).json({ message: 'Valid cookie' });
+    }
+    catch (err) {
+        res.status(401).json({ message: 'Invalid cookie' });
+    }
+});
 router.post('/register', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, email, password, hashedPW;
     return __generator(this, function (_b) {
-        console.log('body', req.body);
         _a = req.body, email = _a.email, password = _a.password;
-        if (!util_1.isValidEmail(email)) {
-            res.status(400).json({ message: 'invalid Email' });
-        }
-        else if (util_1.emailExists(email)) {
+        if (util_1.emailExists(email)) {
             res.status(409).json({ message: 'resource already exists' });
+            return [2 /*return*/];
         }
-        else {
-            try {
-                hashedPW = bcrypt_1.default.hashSync(password, process.env.saltRounds);
-                util_1.createUser(__assign(__assign({}, req.body), { id: uuid_1.v4(), password: hashedPW }));
-                res.status(201).json({ message: 'User created' });
-            }
-            catch (err) {
-                res.status(500).json({ message: 'Something went wrong when trying create user' });
-            }
+        if (!util_1.isValidUser(req.body)) {
+            res.status(400).json({ message: 'invalid Email' });
+            return [2 /*return*/];
+        }
+        try {
+            hashedPW = bcrypt_1.default.hashSync(password, Number(process.env.SALT_ROUNDS));
+            util_1.createUser(__assign(__assign({}, req.body), { id: uuid_1.v4(), password: hashedPW }));
+            res.status(201).json({ message: 'User created' });
+        }
+        catch (err) {
+            console.log(err);
+            res.status(500).json({ message: 'Something went wrong when trying create user' });
         }
         return [2 /*return*/];
     });
 }); });
 router.post('/login', function (req, res) {
     var _a = req.body, email = _a.email, password = _a.password;
-    console.log(email, password);
     var user = util_1.getUserByEmail(email);
     if (!user) {
         res.status(401).json({ message: 'Invalid credentials' });
@@ -94,7 +104,7 @@ router.post('/login', function (req, res) {
         if (!valiLogin) {
             res.status(401).json({ message: 'Invalid credentials' });
         }
-        res.cookie('juid', jsonwebtoken_1.default.sign({ id: user.id, name: user.name, email: user.email }, process.env.JWT_SECRET), { expires: new Date(Date.now() + 900000), httpOnly: true });
+        res.cookie('juid', jsonwebtoken_1.default.sign({ id: user.id, name: user.name, email: user.email }, process.env.JWT_SECRET), { maxAge: 360000 * 24 * 7, httpOnly: false });
         res.status(200).json({ message: 'User signed in succesfully' });
     }
 });
