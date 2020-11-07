@@ -34,7 +34,7 @@ export const getUserByEmail = (email: string): User | false => {
   const user = db.users.find((el) => el.email === email);
   if (user) return user;
   return false;
-}
+};
 
 export const isValidEmail = (email: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 export const emailExists = (email: string): boolean => {

@@ -3,7 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
-import { createUser, emailExists, getUserByEmail, isValidEmail } from '../util';
+import {
+  createUser, emailExists, getUserByEmail, isValidEmail,
+} from '../util';
 
 dotenv.config();
 const router = express.Router();
@@ -39,7 +41,7 @@ router.post('/login', (req: Request, res: Response) => {
     res.cookie(
       'juid',
       jwt.sign({ id: user.id, name: user.name, email: user.email }, process.env.JWT_SECRET),
-      { expires: new Date(Date.now() + 900000), httpOnly: true }
+      { expires: new Date(Date.now() + 900000), httpOnly: true },
     );
     res.status(200).json({ message: 'User signed in succesfully' });
   }
