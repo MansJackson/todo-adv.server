@@ -11,6 +11,7 @@ dotenv.config();
 const router = express.Router();
 
 router.post('/register', async (req: Request, res: Response) => {
+  console.log('body', req.body); 
   const { email, password } = req.body;
 
   if (!isValidEmail(email)) {
@@ -30,6 +31,7 @@ router.post('/register', async (req: Request, res: Response) => {
 
 router.post('/login', (req: Request, res: Response) => {
   const { email, password } = req.body;
+  console.log(email, password);
   const user = getUserByEmail(email);
   if (!user) {
     res.status(401).json({ message: 'Invalid credentials' });
