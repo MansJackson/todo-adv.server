@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import morgan from 'morgan';
@@ -7,8 +7,10 @@ import path from 'path';
 import cors, { CorsOptions } from 'cors';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import jwt from 'jsonwebtoken';
 import indexRoutes from './routes';
 import config from './socketConfig';
+import { User } from './types';
 
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -25,6 +27,17 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
+
+app.use((req: Request & { user: User }, res: Response, next: NextFunction) => {
+  try {
+    const cookie = req.cookies.juid;
+    const decoded = jwt.verify(cookie, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch {
+    res.status(401).json({ message: 'Unauthorized' });
+  }
+});
 
 const shutDown = () => {
   io.sockets.emit('shut-down', 'The server has been shut down');

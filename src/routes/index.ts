@@ -4,9 +4,10 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import {
-  createUser, emailExists, getUserByEmail, getUserById, isValidEmail, isValidUser,
+  createList,
+  createUser, emailExists, getListById, getListsByUserId, getUserByEmail, getUserById, isValidEmail, isValidUser,
 } from '../util';
-import { User } from '../types';
+import { List, User, UserRequest } from '../types';
 
 dotenv.config();
 const router = express.Router();
@@ -76,6 +77,37 @@ router.post('/email_exists', (req: Request, res: Response) => {
   } else {
     res.status(200).json({ message: 'Email is available' });
   }
+});
+
+router.post('/lists', (req: UserRequest, res: Response) => {
+  const { title } = req.body;
+  const list: List = {
+    id: uuidv4(),
+    title,
+    owner: req.user.id,
+    editors: [],
+    items: [],
+  }
+  createList(list);
+});
+
+router.get('/lists', (req: UserRequest, res: Response) => {
+  const lists = getListsByUserId(req.user.id);
+  if (!lists) {
+    res.status(204).json({ message: 'No lists belong to this user' });
+    return;
+  }
+  res.status(200).json({ lists });
+});
+
+router.get('/lists/:id', (req: UserRequest, res: Response) => {
+  const { id } = req.params;
+  const list = getListById(id);
+  if (!list) {
+    res.status(204).json({ message: 'This list does not exist' });
+    return;
+  }
+  res.status(200).json({ list });
 });
 
 export default router;
