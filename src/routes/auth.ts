@@ -1,9 +1,11 @@
 import express, { Request, Response } from 'express';
-import { User } from '../types';
-import { getUserById, emailExists, isValidUser, createUser, getUserByEmail, isValidEmail } from '../util';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  getUserById, emailExists, isValidUser, createUser, getUserByEmail, isValidEmail,
+} from '../util';
+import { User } from '../types';
 
 const router = express.Router();
 
@@ -35,7 +37,9 @@ router.post('/register', async (req: Request, res: Response) => {
   }
   try {
     const hashedPW = bcrypt.hashSync(password, Number(process.env.SALT_ROUNDS));
-    createUser({ ...req.body, id: uuidv4(), password: hashedPW, shared: [] });
+    createUser({
+      ...req.body, id: uuidv4(), password: hashedPW, shared: [],
+    });
     res.status(201).json({ message: 'User created' });
   } catch (err) {
     res.status(500).json({ message: 'Something went wrong when trying create user' });
@@ -48,12 +52,11 @@ router.post('/login', (req: Request, res: Response) => {
 
   if (!user) {
     res.status(401).json({ message: 'Invalid credentials' });
-    console.log('No user')
+    console.log('No user');
   } else {
     const valiLogin = bcrypt.compareSync(password, user.password);
     if (!valiLogin) {
       res.status(401).json({ message: 'Invalid credentials' });
-      
     }
     res.cookie(
       'juid',

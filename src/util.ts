@@ -65,7 +65,7 @@ export const getListsByUserId = (id: string): false | { owned: List[], shared: L
   return { owned, shared };
 };
 
-export const getListById = (userId: string, listId: string): false | undefined | List => {
+export const getListById = (userId: string, listId: string): false | undefined | List => {
   const db = getFile('lists.json');
   if (!db.lists) return undefined;
   const list = db.lists.find((el) => el.id === listId);
