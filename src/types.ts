@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request } from 'express';
 
 export type User = {
   id: string;
@@ -6,6 +6,7 @@ export type User = {
   email: string;
   username: string;
   password: string;
+  shared: string[];
 };
 
 export type List = {
@@ -14,6 +15,6 @@ export type List = {
   owner: string;
   editors: string[];
   items: string[];
-}
+};
 
-export type UserRequest = Request & { user: User };
+export type AuthenticatedReq = Request & { user: User };

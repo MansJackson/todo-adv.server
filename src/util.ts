@@ -48,38 +48,42 @@ export const getUserById = (id: string): User | false => {
   return false;
 };
 
-
 // List DB
 export const createList = (list: List): void => {
   const db = getFile('lists.json');
   if (db.lists) db.lists = [...db.lists, list];
   else db.lists = [list];
   writeFile('lists.json', JSON.stringify(db));
-}
+};
 
-export const getListsByUserId = (id: string): false | List[] => {
+export const getListsByUserId = (id: string): false | { owned: List[], shared: List[] } => {
   const db = getFile('lists.json');
   if (!db.lists) return false;
-  const lists = db.lists.filter(el => el.owner === id);
-  return lists;
-}
+  const owned = db.lists.filter((el) => el.owner === id);
+  const shared = db.lists.filter((el) => el.editors.includes(id));
+  if (!owned && !shared) return false;
+  return { owned, shared };
+};
 
-export const getListById = (id: string): false | List[] => {
+export const getListById = (userId: string, listId: string): false | undefined | List => {
   const db = getFile('lists.json');
-  if (!db.lists) return false;
-  const lists = db.lists.filter(el => el.id === id);
-  return lists;
-}
+  if (!db.lists) return undefined;
+  const list = db.lists.find((el) => el.id === listId);
+  if (!list) return undefined;
+  if (list.owner !== userId && !list.editors.includes(userId)) return false;
+  return list;
+};
 
 export const addEditorToList = (listId: string, userId: string): boolean => {
   const db = getFile('lists.json');
   if (!db.lists) return false;
-  const list = db.lists.find(el => el.id === listId);
+  const list = db.lists.find((el) => el.id === listId);
   if (!list) return false;
   const newList = { ...list, editors: [...list.editors, userId] };
-  const dataToWrite = { lists: [...db.lists.filter(el => el.id !== listId), newList] };
+  const dataToWrite = { lists: [...db.lists.filter((el) => el.id !== listId), newList] };
   writeFile('list.json', JSON.stringify(dataToWrite));
-}
+  return true;
+};
 
 // Validation
 export const isValidEmail = (email: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
