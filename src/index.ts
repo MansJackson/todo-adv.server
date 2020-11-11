@@ -1,6 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
 import http from 'http';
-import { Server } from 'socket.io';
 import morgan from 'morgan';
 import fs from 'fs';
 import path from 'path';
@@ -13,17 +12,18 @@ import indexRoutes from './routes';
 import authRoutes from './routes/auth';
 import config from './socketConfig';
 import { User } from './types';
+import { isValidEmail } from './util';
 
 dotenv.config();
 const PORT = process.env.PORT || 8000;
 const app = express();
-const srv = http.createServer(app);
-const io = new Server(srv);
+const server = http.createServer(app);
 const accessLogStream = fs.createWriteStream(path.join(__dirname, '../', 'logs', 'access.log'), { flags: 'a' });
 const corsOptions: CorsOptions = {
   origin: 'http://localhost:3000',
   credentials: true,
 };
+const io = require('socket.io')(server, { cors: corsOptions });
 config(io);
 
 app.use(cookieParser());
@@ -56,7 +56,7 @@ app.use('/api', indexRoutes);
 
 const shutDown = () => {
   io.sockets.emit('shut-down', 'The server has been shut down');
-  io.close(() => srv.close());
+  io.close(() => server.close());
   // clearUsers();
   // logToFile('server was shut down', 'connection.log');
   process.exit();
@@ -65,4 +65,4 @@ const shutDown = () => {
 process.on('SIGINT', () => { shutDown(); });
 process.on('SIGTERM', () => { shutDown(); });
 
-srv.listen(PORT);
+server.listen(PORT);

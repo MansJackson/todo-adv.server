@@ -25,7 +25,7 @@ router.get('/valid_cookie', (req: Request, res: Response) => {
   }
 });
 
-router.post('/register', async (req: Request, res: Response) => {
+router.post('/register', (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (emailExists(email)) {
     res.status(409).json({ message: 'resource already exists' });

@@ -97,7 +97,7 @@ export const isValidUser = (user: User & { passwordConf: string }): boolean => {
 };
 
 export const emailExists = (email: string): boolean => {
-  const db = getFile('db.json');
+  const db = getFile('users.json');
   if (!db.users) return false;
   const match = db.users.find((el) => el.email === email);
   if (match) return true;
