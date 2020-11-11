@@ -57,14 +57,15 @@ router.post('/login', (req: Request, res: Response) => {
     const valiLogin = bcrypt.compareSync(password, user.password);
     if (!valiLogin) {
       res.status(401).json({ message: 'Invalid credentials' });
+    } else {
+      res.cookie(
+        'juid',
+        jwt.sign({ id: user.id, name: user.name, email: user.email }, process.env.JWT_SECRET),
+        { maxAge: 360000 * 24 * 7, httpOnly: false },
+      );
+      res.status(200).json({ message: 'User signed in succesfully' });
     }
-    res.cookie(
-      'juid',
-      jwt.sign({ id: user.id, name: user.name, email: user.email }, process.env.JWT_SECRET),
-      { maxAge: 360000 * 24 * 7, httpOnly: false },
-    );
-    res.status(200).json({ message: 'User signed in succesfully' });
-  }
+  } 
 });
 
 router.post('/email_exists', (req: Request, res: Response) => {
