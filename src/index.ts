@@ -12,7 +12,6 @@ import indexRoutes from './routes';
 import authRoutes from './routes/auth';
 import config from './socketConfig';
 import { User } from './types';
-import { isValidEmail } from './util';
 
 dotenv.config();
 const PORT = process.env.PORT || 8000;
@@ -23,13 +22,15 @@ const corsOptions: CorsOptions = {
   origin: 'http://localhost:3000',
   credentials: true,
 };
-const io = require('socket.io')(server, { cors: corsOptions });
-config(io);
 
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
+
+const io = require('socket.io')(server, { cors: { ...corsOptions, cookie: true } });
+
+config(io);
 
 app.use(morgan(
   ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :url :status :response-time ms - :res[content-length]',

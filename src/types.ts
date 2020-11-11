@@ -13,7 +13,7 @@ export type List = {
   id: string;
   title: string;
   owner: string;
-  editors: string[];
+  editors: {id: string, initials: string}[];
   items: string[];
 };
 

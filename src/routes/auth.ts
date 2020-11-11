@@ -52,7 +52,6 @@ router.post('/login', (req: Request, res: Response) => {
 
   if (!user) {
     res.status(401).json({ message: 'Invalid credentials' });
-    console.log('No user');
   } else {
     const valiLogin = bcrypt.compareSync(password, user.password);
     if (!valiLogin) {
@@ -65,7 +64,7 @@ router.post('/login', (req: Request, res: Response) => {
       );
       res.status(200).json({ message: 'User signed in succesfully' });
     }
-  } 
+  }
 });
 
 router.post('/email_exists', (req: Request, res: Response) => {
