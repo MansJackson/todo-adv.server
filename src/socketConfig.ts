@@ -2,7 +2,7 @@ import { Server, Socket } from 'socket.io';
 import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
 import {
-  addEditorToList, addItemToList, getUserByEmail, isListEditor, isListOwner,
+  addEditorToList, addItemToList, deleteList, getUserByEmail, isListEditor, isListOwner, removeEditorFromList,
 } from './util';
 import { User } from './types';
 
@@ -45,7 +45,7 @@ export default (io: Server): NodeJS.EventEmitter => (
       }
       addEditorToList(listId, userToAdd.id);
       socket.emit('notification', 'User was added as an editor');
-      socket.emit('updateLists');
+      socket.broadcast.emit('updateLists');
     });
 
     socket.on('addItem', (listId: string, text: string) => {
@@ -54,8 +54,36 @@ export default (io: Server): NodeJS.EventEmitter => (
         return;
       }
       addItemToList(listId, text);
-      socket.broadcast.emit('updateList');
+      socket.to(listId).emit('updateList');
       socket.emit('updateList');
+    });
+
+    socket.on('deleteList', (listId: string) => {
+      if (!isListOwner(userId, listId)) {
+        socket.emit('notification', 'You do not have permission to delete this list');
+        return;
+      }
+      const result = deleteList(listId);
+      if (!result) {
+        socket.emit('notification', 'Could not delete list, try again later');
+      } else {
+        socket.to(listId).emit('listRemoved');
+        socket.emit('updateLists');
+      }
+    });
+
+    socket.on('removeAsEditor', (listId: string) => {
+      if (!isListEditor(userId, listId)) {
+        socket.emit('notification', 'You are not listed as an editor to this file, try to refresh your page');
+        return;
+      }
+      const result = removeEditorFromList(listId, userId);
+      if (!result) {
+        socket.emit('notification', 'Could not delete list, try again later');
+      } else {
+        socket.to(listId).emit('updateLists');
+        socket.emit('updateLists');
+      }
     });
 
     socket.on('disconnect', () => {

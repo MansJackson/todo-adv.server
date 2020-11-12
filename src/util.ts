@@ -134,6 +134,20 @@ export const addEditorToList = (listId: string, userId: string): boolean => {
   return true;
 };
 
+export const removeEditorFromList = (listId: string, userId: string): boolean => {
+  const db = getFile('lists.json');
+  if (!db.lists) return false;
+  const list = db.lists.find((el) => el.id === listId);
+  if (!list) return false;
+  const newList = {
+    ...list,
+    editors: list.editors.filter((el) => el.id !== userId),
+  };
+  const dataToWrite = { lists: [...db.lists.filter((el) => el.id !== listId), newList] };
+  writeFile('lists.json', JSON.stringify(dataToWrite));
+  return true;
+};
+
 export const addItemToList = (listId: string, text: string): boolean => {
   const db = getFile('lists.json');
   if (!db.lists) return false;
@@ -152,5 +166,13 @@ export const addItemToList = (listId: string, text: string): boolean => {
   };
   const dataToWrite = { lists: [...db.lists.filter((el) => el.id !== listId), newList] };
   writeFile('lists.json', JSON.stringify(dataToWrite));
+  return true;
+};
+
+export const deleteList = (listId: string) => {
+  const db = getFile('lists.json');
+  if (!db.lists) return false;
+  const updatedLists = { lists: db.lists.filter((el) => el.id !== listId) };
+  writeFile('lists.json', JSON.stringify(updatedLists));
   return true;
 };
