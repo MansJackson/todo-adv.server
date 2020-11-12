@@ -169,7 +169,24 @@ export const addItemToList = (listId: string, text: string): boolean => {
   return true;
 };
 
-export const deleteList = (listId: string) => {
+export const toggleItemCompleted = (listId: string, itemId: string): boolean => {
+  const db = getFile('lists.json');
+  if (!db.lists) return false;
+  const list = db.lists.find((el) => el.id === listId);
+  if (!list) return false;
+  const newList = {
+    ...list,
+    items: list.items.map((el) => {
+      if (el.id !== itemId) return el;
+      return { ...el, completed: !el.completed };
+    }),
+  };
+  const dataToWrite = { lists: [...db.lists.filter((el) => el.id !== listId), newList] };
+  writeFile('lists.json', JSON.stringify(dataToWrite));
+  return true;
+};
+
+export const deleteList = (listId: string): boolean => {
   const db = getFile('lists.json');
   if (!db.lists) return false;
   const updatedLists = { lists: db.lists.filter((el) => el.id !== listId) };

@@ -13,8 +13,8 @@ export type List = {
   id: string;
   title: string;
   owner: string;
-  editors: {id: string, initials: string}[];
-  items: string[];
+  editors: { id: string, initials: string }[];
+  items: { id: string, text: string, completed: boolean }[];
 };
 
 export type AuthenticatedReq = Request & { user: User };

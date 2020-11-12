@@ -2,7 +2,14 @@ import { Server, Socket } from 'socket.io';
 import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
 import {
-  addEditorToList, addItemToList, deleteList, getUserByEmail, isListEditor, isListOwner, removeEditorFromList,
+  addEditorToList,
+  addItemToList,
+  deleteList,
+  getUserByEmail,
+  isListEditor,
+  isListOwner,
+  removeEditorFromList,
+  toggleItemCompleted,
 } from './util';
 import { User } from './types';
 
@@ -81,8 +88,22 @@ export default (io: Server): NodeJS.EventEmitter => (
       if (!result) {
         socket.emit('notification', 'Could not delete list, try again later');
       } else {
-        socket.to(listId).emit('updateLists');
+        socket.to(listId).emit('updateList');
         socket.emit('updateLists');
+      }
+    });
+
+    socket.on('toggleCompleted', (listId, itemId) => {
+      if (!isListEditor(userId, listId) && !isListOwner(userId, listId)) {
+        socket.emit('you do not have permission to edit this list');
+        return;
+      }
+      const result = toggleItemCompleted(listId, itemId);
+      if (!result) {
+        socket.emit('notification', 'Could edit list, try again later');
+      } else {
+        socket.to(listId).emit('updateList');
+        socket.emit('updateList');
       }
     });
 
