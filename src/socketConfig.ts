@@ -9,6 +9,7 @@ import {
   isListEditor,
   isListOwner,
   removeEditorFromList,
+  removeItemFromList,
   toggleItemCompleted,
 } from './util';
 import { User } from './types';
@@ -28,12 +29,11 @@ export default (io: Server): NodeJS.EventEmitter => (
     }
     socket.on('joinRoom', (id) => {
       socket.join(id);
-      socket.emit('notification', `Joined room: ${id}`);
+      socket.emit('isOwner', isListOwner(userId, id));
     });
 
     socket.on('leaveRoom', (id: string) => {
       socket.leave(id);
-      socket.emit('notification', `left room: ${id}`);
     });
 
     socket.on('addEditor', (email: string, listId: string) => {
@@ -51,8 +51,18 @@ export default (io: Server): NodeJS.EventEmitter => (
         return;
       }
       addEditorToList(listId, userToAdd.id);
-      socket.emit('notification', 'User was added as an editor');
-      socket.broadcast.emit('updateLists');
+      socket.to(listId).emit('updateList');
+      socket.emit('updateList');
+    });
+
+    socket.on('removeEditor', (editorId: string, listId: string) => {
+      if (!isListOwner(userId, listId)) {
+        socket.emit('notification', 'You are not the owner of this list');
+        return;
+      }
+      removeEditorFromList(listId, editorId);
+      socket.to(listId).emit('updateList');
+      socket.emit('updateList');
     });
 
     socket.on('addItem', (listId: string, text: string) => {
@@ -61,6 +71,16 @@ export default (io: Server): NodeJS.EventEmitter => (
         return;
       }
       addItemToList(listId, text);
+      socket.to(listId).emit('updateList');
+      socket.emit('updateList');
+    });
+
+    socket.on('deleteItem', (listId: string, itemId: string) => {
+      if (!isListOwner(userId, listId) && !isListEditor(userId, listId)) {
+        socket.emit('notification', 'You do not have permission to edit this list');
+        return;
+      }
+      removeItemFromList(listId, itemId);
       socket.to(listId).emit('updateList');
       socket.emit('updateList');
     });
@@ -108,7 +128,7 @@ export default (io: Server): NodeJS.EventEmitter => (
     });
 
     socket.on('disconnect', () => {
-      console.log('socket disconnected');
+      // Not sure what to do here
     });
   })
 );

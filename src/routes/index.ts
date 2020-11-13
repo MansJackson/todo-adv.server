@@ -2,6 +2,7 @@ import express, { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import {
   createList,
+  getInitials,
   getListById, getListsByUserId,
 } from '../util';
 import { List, AuthenticatedReq } from '../types';
@@ -12,8 +13,11 @@ router.post('/lists', (req: AuthenticatedReq, res: Response) => {
   const { title } = req.body;
   const list: List = {
     id: uuidv4(),
-    title,
-    owner: req.user.id,
+    title: title[0].toUpperCase() + title.substring(1),
+    owner: {
+      id: req.user.id,
+      initials: getInitials(req.user.name),
+    },
     editors: [],
     items: [],
   };

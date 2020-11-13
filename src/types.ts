@@ -12,7 +12,7 @@ export type User = {
 export type List = {
   id: string;
   title: string;
-  owner: string;
+  owner: { id: string, initials: string };
   editors: { id: string, initials: string }[];
   items: { id: string, text: string, completed: boolean }[];
 };

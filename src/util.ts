@@ -25,6 +25,13 @@ export const writeFile = (fileName: string, data: string): void => {
   }
 };
 
+// Other
+export const getInitials = (name: string): string => {
+  const nameArr = name.split(' ');
+  if (nameArr.length > 1) return nameArr[0][0] + nameArr[1][0];
+  return nameArr[0][0] + nameArr[0][1];
+};
+
 // Validation
 export const isValidEmail = (email: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -48,7 +55,7 @@ export const isListOwner = (userId: string, listId: string): boolean => {
   const db = getFile('lists.json');
   if (!db.lists) return false;
   const list = db.lists.find((el) => el.id === listId);
-  if (list.owner !== userId) return false;
+  if (list.owner.id !== userId) return false;
   return true;
 };
 
@@ -96,7 +103,7 @@ export const createList = (list: List): void => {
 export const getListsByUserId = (id: string): false | { owned: List[], shared: List[] } => {
   const db = getFile('lists.json');
   if (!db.lists) return false;
-  const owned = db.lists.filter((el) => el.owner === id);
+  const owned = db.lists.filter((el) => el.owner.id === id);
   const shared = db.lists.filter((el) => isListEditor(id, el.id));
   if (!owned && !shared) return false;
   return { owned, shared };
@@ -107,7 +114,7 @@ export const getListById = (userId: string, listId: string): false | undefined |
   if (!db.lists) return undefined;
   const list = db.lists.find((el) => el.id === listId);
   if (!list) return undefined;
-  if (list.owner !== userId && !isListEditor(userId, listId)) return false;
+  if (list.owner.id !== userId && !isListEditor(userId, listId)) return false;
   return list;
 };
 
@@ -125,7 +132,7 @@ export const addEditorToList = (listId: string, userId: string): boolean => {
       ...list.editors,
       {
         id: userId,
-        initials: userToAdd.name.split(' ')[0][0] + userToAdd.name.split(' ')[1][0],
+        initials: getInitials(userToAdd.name),
       },
     ],
   };
@@ -163,6 +170,20 @@ export const addItemToList = (listId: string, text: string): boolean => {
         text,
       },
     ],
+  };
+  const dataToWrite = { lists: [...db.lists.filter((el) => el.id !== listId), newList] };
+  writeFile('lists.json', JSON.stringify(dataToWrite));
+  return true;
+};
+
+export const removeItemFromList = (listId: string, itemId: string): boolean => {
+  const db = getFile('lists.json');
+  if (!db.lists) return false;
+  const list = db.lists.find((el) => el.id === listId);
+  if (!list) return false;
+  const newList = {
+    ...list,
+    items: list.items.filter((el) => el.id !== itemId),
   };
   const dataToWrite = { lists: [...db.lists.filter((el) => el.id !== listId), newList] };
   writeFile('lists.json', JSON.stringify(dataToWrite));
