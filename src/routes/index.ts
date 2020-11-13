@@ -9,6 +9,10 @@ import { List, AuthenticatedReq } from '../types';
 
 const router = express.Router();
 
+router.get('/me', (req: AuthenticatedReq, res: Response) => {
+  res.status(200).json(req.user.id);
+})
+
 router.post('/lists', (req: AuthenticatedReq, res: Response) => {
   const { title } = req.body;
   const list: List = {
@@ -17,6 +21,8 @@ router.post('/lists', (req: AuthenticatedReq, res: Response) => {
     owner: {
       id: req.user.id,
       initials: getInitials(req.user.name),
+      connected: false,
+      mousePosition: { x: 0, y: 0 },
     },
     editors: [],
     items: [],

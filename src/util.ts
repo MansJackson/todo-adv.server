@@ -133,6 +133,8 @@ export const addEditorToList = (listId: string, userId: string): boolean => {
       {
         id: userId,
         initials: getInitials(userToAdd.name),
+        connected: false,
+        mousePosition: { x: 0, y: 0 },
       },
     ],
   };
@@ -140,6 +142,56 @@ export const addEditorToList = (listId: string, userId: string): boolean => {
   writeFile('lists.json', JSON.stringify(dataToWrite));
   return true;
 };
+
+export const updateMousePosition = (listId: string, userId: string, mousePosition: { x: number, y: number }) => {
+  const db = getFile('lists.json');
+  if (!db.lists) return false;
+  const list = db.lists.find((el) => el.id === listId);
+  if (!list) return false;
+  const user = list.owner.id === userId
+    ? list.owner
+    : list.editors.find((el) => el.id === userId);
+  const newList = list.owner.id === userId
+    ? {
+      ...list,
+      owner: { ...user, mousePosition }
+    }
+    : {
+      ...list,
+      editors: [
+        ...list.editors.filter(el => el.id !== userId),
+        { ...user, mousePosition },
+      ]
+    };
+  const dataToWrite = { lists: [...db.lists.filter((el) => el.id !== listId), newList] };
+  writeFile('lists.json', JSON.stringify(dataToWrite));
+  return true;
+}
+
+export const changeConnectedStatus = (listId: string, userId: string, connected: boolean) => {
+  const db = getFile('lists.json');
+  if (!db.lists) return false;
+  const list = db.lists.find((el) => el.id === listId);
+  if (!list) return false;
+  const user = list.owner.id === userId
+    ? list.owner
+    : list.editors.find((el) => el.id === userId);
+  const newList = list.owner.id === userId
+    ? {
+      ...list,
+      owner: { ...user, connected }
+    }
+    : {
+      ...list,
+      editors: [
+        ...list.editors.filter(el => el.id !== userId),
+        { ...user, connected },
+      ]
+    };
+  const dataToWrite = { lists: [...db.lists.filter((el) => el.id !== listId), newList] };
+  writeFile('lists.json', JSON.stringify(dataToWrite));
+  return true;
+}
 
 export const removeEditorFromList = (listId: string, userId: string): boolean => {
   const db = getFile('lists.json');

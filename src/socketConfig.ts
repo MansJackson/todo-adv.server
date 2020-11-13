@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import {
   addEditorToList,
   addItemToList,
+  changeConnectedStatus,
   deleteList,
   getUserByEmail,
   isListEditor,
@@ -11,6 +12,7 @@ import {
   removeEditorFromList,
   removeItemFromList,
   toggleItemCompleted,
+  updateMousePosition,
 } from './util';
 import { User } from './types';
 
@@ -29,11 +31,17 @@ export default (io: Server): NodeJS.EventEmitter => (
     }
     socket.on('joinRoom', (id) => {
       socket.join(id);
+      changeConnectedStatus(id, userId, true);
       socket.emit('isOwner', isListOwner(userId, id));
+      socket.to(id).emit('updateList');
+      socket.emit('updateList');
     });
 
     socket.on('leaveRoom', (id: string) => {
+      changeConnectedStatus(id, userId, false);
       socket.leave(id);
+      socket.to(id).emit('updateList');
+      socket.emit('updateList');
     });
 
     socket.on('addEditor', (email: string, listId: string) => {
@@ -115,7 +123,7 @@ export default (io: Server): NodeJS.EventEmitter => (
 
     socket.on('toggleCompleted', (listId, itemId) => {
       if (!isListEditor(userId, listId) && !isListOwner(userId, listId)) {
-        socket.emit('you do not have permission to edit this list');
+        socket.emit('notification', 'you do not have permission to edit this list');
         return;
       }
       const result = toggleItemCompleted(listId, itemId);
@@ -125,6 +133,16 @@ export default (io: Server): NodeJS.EventEmitter => (
         socket.to(listId).emit('updateList');
         socket.emit('updateList');
       }
+    });
+
+    socket.on('changeMousePosition', (listId: string, position: { x: number, y: number }) => {
+      if (!isListEditor(userId, listId) && !isListOwner(userId, listId)) {
+        socket.emit('notification', 'you do not have permission to edit this list');
+        return;
+      }
+      updateMousePosition(listId, userId, position);
+      socket.to(listId).emit('updateList');
+      socket.emit('updateList');
     });
 
     socket.on('disconnect', () => {
