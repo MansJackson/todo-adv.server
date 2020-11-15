@@ -6,6 +6,7 @@ import {
   addItemToList,
   changeConnectedStatus,
   deleteList,
+  getListById,
   getUserByEmail,
   isListEditor,
   isListOwner,
@@ -141,8 +142,9 @@ export default (io: Server): NodeJS.EventEmitter => (
         return;
       }
       updateMousePosition(listId, userId, position);
-      socket.to(listId).emit('updateList');
-      socket.emit('updateList');
+      const list = getListById(userId, listId);
+      socket.to(listId).emit('updateListNew', list);
+      socket.emit('updateListNew', list);
     });
 
     socket.on('disconnect', () => {

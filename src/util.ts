@@ -125,7 +125,9 @@ export const addEditorToList = (listId: string, userId: string): boolean => {
   if (!list) return false;
   const userToAdd = getUserById(userId);
   if (!userToAdd) return false;
-
+  const nextColor = list.editors.length 
+    ? list.editors[list.editors.length - 1].color + 1
+    : 2;
   const newList = {
     ...list,
     editors: [
@@ -135,6 +137,7 @@ export const addEditorToList = (listId: string, userId: string): boolean => {
         initials: getInitials(userToAdd.name),
         connected: false,
         mousePosition: { x: 0, y: 0 },
+        color: nextColor,
       },
     ],
   };
@@ -142,6 +145,8 @@ export const addEditorToList = (listId: string, userId: string): boolean => {
   writeFile('lists.json', JSON.stringify(dataToWrite));
   return true;
 };
+
+
 
 export const updateMousePosition = (listId: string, userId: string, mousePosition: { x: number, y: number }) => {
   const db = getFile('lists.json');

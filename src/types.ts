@@ -23,6 +23,7 @@ export type List = {
     initials: string, 
     mousePosition: { x: number, y: number },
     connected: boolean,
+    color: number,
   }[];
   items: { id: string, text: string, completed: boolean }[];
 };
