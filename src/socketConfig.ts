@@ -24,7 +24,7 @@ export default (io: Server): NodeJS.EventEmitter => (
     const cookies = cookie.parse(socket.request.headers.cookies || '');
     let userId = '';
     try {
-      const decoded: User = jwt.verify(cookies.juid, process.env.JWT_SECRET);
+      const decoded: any = jwt.verify(cookies.juid, process.env.JWT_SECRET);
       userId = decoded.id;
     } catch {
       socket.emit('notification', 'unauthorized');

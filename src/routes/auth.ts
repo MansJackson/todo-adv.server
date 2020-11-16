@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   getUserById, emailExists, isValidUser, createUser, getUserByEmail, isValidEmail,
 } from '../util';
-import { User } from '../types';
 
 const router = express.Router();
 
@@ -13,7 +12,7 @@ router.get('/valid_cookie', (req: Request, res: Response) => {
   const cookie = req.cookies.juid;
 
   try {
-    const decoded: User = jwt.verify(cookie, process.env.JWT_SECRET);
+    const decoded: any = jwt.verify(cookie, process.env.JWT_SECRET);
     const user = getUserById(decoded.id);
     if (!user) {
       res.status(401).json({ message: 'Invalid cookie' });
