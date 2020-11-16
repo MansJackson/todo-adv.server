@@ -131,7 +131,7 @@ export const addEditorToList = (listId: string, userId: string): boolean => {
   const newList = {
     ...list,
     editors: [
-      ...list.editors,
+      ...list.editors.filter(el => el.id !== userId),
       {
         id: userId,
         initials: getInitials(userToAdd.name),
@@ -183,6 +183,7 @@ export const changeConnectedStatus = (
   const user = list.owner.id === userId
     ? list.owner
     : list.editors.find((el) => el.id === userId);
+  if (!user) return false;
   const newList = list.owner.id === userId
     ? {
       ...list,
@@ -204,7 +205,7 @@ export const disconnectFromAllLists = (userId: string): boolean => {
   const db = getFile('lists.json');
   if (!db.lists) return false;
   db.lists.forEach((el) => {
-    if (isListEditor || isListEditor) {
+    if (isListEditor(userId, el.id) || isListOwner(userId, el.id)) {
       changeConnectedStatus(el.id, userId, false);
     }
   });
