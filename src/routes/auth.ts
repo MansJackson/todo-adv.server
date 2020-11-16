@@ -18,7 +18,7 @@ router.get('/valid_cookie', (req: Request, res: Response) => {
       res.status(401).json({ message: 'Invalid cookie' });
       return;
     }
-    res.status(200).json({ message: 'Valid cookie', cookie: req.cookies.juid });
+    res.status(200).json({ message: 'Valid cookie', cookie });
   } catch (err) {
     res.status(401).json({ message: 'Invalid cookie' });
   }
@@ -64,7 +64,7 @@ router.post('/login', (req: Request, res: Response) => {
         'juid',
         cookie,
         {
-          maxAge: (Date.now() + (360000 * 24 * 7)),
+          maxAge: (360000 * 24 * 7),
           httpOnly: false,
           sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
           secure: process.env.NODE_ENV === 'production',
@@ -74,6 +74,11 @@ router.post('/login', (req: Request, res: Response) => {
     }
   }
 });
+
+router.get('/logout', (req, res) => {
+  res.clearCookie('juid');
+  res.status(200).json({ message: 'User signed out succesfully' });
+})
 
 router.post('/email_exists', (req: Request, res: Response) => {
   const { email } = req.body;
