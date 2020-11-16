@@ -4,6 +4,7 @@
   "description": "server for my ambitious todo app",
   "main": "dist/index.js",
   "scripts": {
+    "build-w": "tsc -w",
     "build": "tsc",
     "postinstall": "tsc",
     "dev": "nodemon --watch dist",
