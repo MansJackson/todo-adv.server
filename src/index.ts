@@ -19,7 +19,7 @@ const app = express();
 const server = http.createServer(app);
 const accessLogStream = fs.createWriteStream(path.join(__dirname, '../', 'logs', 'access.log'), { flags: 'a' });
 const corsOptions: CorsOptions = {
-  origin: 'http://localhost:3000',
+  origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000',
   credentials: true,
 };
 
