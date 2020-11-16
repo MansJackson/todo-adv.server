@@ -56,9 +56,13 @@ router.post('/login', (req: Request, res: Response) => {
     if (!valiLogin) {
       res.status(401).json({ message: 'Invalid credentials' });
     } else {
+      const cookie = jwt.sign(
+        { id: user.id, name: user.name, email: user.email },
+        process.env.JWT_SECRET,
+      );
       res.cookie(
         'juid',
-        jwt.sign({ id: user.id, name: user.name, email: user.email }, process.env.JWT_SECRET),
+        cookie,
         {
           maxAge: (Date.now() + (360000 * 24 * 7)),
           httpOnly: false,
@@ -66,7 +70,7 @@ router.post('/login', (req: Request, res: Response) => {
           secure: process.env.NODE_ENV === 'production',
         },
       );
-      res.status(200).json({ message: 'User signed in succesfully' });
+      res.status(200).json({ message: 'User signed in succesfully', cookie });
     }
   }
 });
