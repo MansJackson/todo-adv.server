@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get('/me', (req: AuthenticatedReq, res: Response) => {
   res.status(200).json(req.user.id);
-})
+});
 
 router.post('/lists', (req: AuthenticatedReq, res: Response) => {
   const { title } = req.body;

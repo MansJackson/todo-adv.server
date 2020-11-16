@@ -28,6 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
 
+// eslint-disable-next-line
 const io = require('socket.io')(server, { cors: { ...corsOptions, cookie: true } });
 
 config(io);

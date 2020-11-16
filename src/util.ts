@@ -125,7 +125,7 @@ export const addEditorToList = (listId: string, userId: string): boolean => {
   if (!list) return false;
   const userToAdd = getUserById(userId);
   if (!userToAdd) return false;
-  const nextColor = list.editors.length 
+  const nextColor = list.editors.length
     ? list.editors[list.editors.length - 1].color + 1
     : 2;
   const newList = {
@@ -146,9 +146,9 @@ export const addEditorToList = (listId: string, userId: string): boolean => {
   return true;
 };
 
-
-
-export const updateMousePosition = (listId: string, userId: string, mousePosition: { x: number, y: number }) => {
+export const updateMousePosition = (
+  listId: string, userId: string, mousePosition: { x: number, y: number },
+): boolean => {
   const db = getFile('lists.json');
   if (!db.lists) return false;
   const list = db.lists.find((el) => el.id === listId);
@@ -159,21 +159,23 @@ export const updateMousePosition = (listId: string, userId: string, mousePositio
   const newList = list.owner.id === userId
     ? {
       ...list,
-      owner: { ...user, mousePosition }
+      owner: { ...user, mousePosition },
     }
     : {
       ...list,
       editors: [
-        ...list.editors.filter(el => el.id !== userId),
+        ...list.editors.filter((el) => el.id !== userId),
         { ...user, mousePosition },
-      ]
+      ],
     };
   const dataToWrite = { lists: [...db.lists.filter((el) => el.id !== listId), newList] };
   writeFile('lists.json', JSON.stringify(dataToWrite));
   return true;
-}
+};
 
-export const changeConnectedStatus = (listId: string, userId: string, connected: boolean) => {
+export const changeConnectedStatus = (
+  listId: string | undefined, userId: string, connected: boolean,
+): boolean => {
   const db = getFile('lists.json');
   if (!db.lists) return false;
   const list = db.lists.find((el) => el.id === listId);
@@ -184,19 +186,30 @@ export const changeConnectedStatus = (listId: string, userId: string, connected:
   const newList = list.owner.id === userId
     ? {
       ...list,
-      owner: { ...user, connected }
+      owner: { ...user, connected },
     }
     : {
       ...list,
       editors: [
-        ...list.editors.filter(el => el.id !== userId),
+        ...list.editors.filter((el) => el.id !== userId),
         { ...user, connected },
-      ]
+      ],
     };
   const dataToWrite = { lists: [...db.lists.filter((el) => el.id !== listId), newList] };
   writeFile('lists.json', JSON.stringify(dataToWrite));
   return true;
-}
+};
+
+export const disconnectFromAllLists = (userId: string): boolean => {
+  const db = getFile('lists.json');
+  if (!db.lists) return false;
+  db.lists.forEach((el) => {
+    if (isListEditor || isListEditor) {
+      changeConnectedStatus(el.id, userId, false);
+    }
+  });
+  return true;
+};
 
 export const removeEditorFromList = (listId: string, userId: string): boolean => {
   const db = getFile('lists.json');

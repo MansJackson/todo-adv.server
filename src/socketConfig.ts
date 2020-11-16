@@ -6,6 +6,7 @@ import {
   addItemToList,
   changeConnectedStatus,
   deleteList,
+  disconnectFromAllLists,
   getListById,
   getUserByEmail,
   isListEditor,
@@ -148,7 +149,7 @@ export default (io: Server): NodeJS.EventEmitter => (
     });
 
     socket.on('disconnect', () => {
-      // Not sure what to do here
+      disconnectFromAllLists(userId);
     });
   })
 );
