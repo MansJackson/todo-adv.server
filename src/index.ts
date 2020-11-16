@@ -11,7 +11,6 @@ import dotenv from 'dotenv';
 import indexRoutes from './routes';
 import authRoutes from './routes/auth';
 import config from './socketConfig';
-import { User } from './types';
 
 dotenv.config();
 const PORT = process.env.PORT || 8000;

@@ -16,7 +16,6 @@ import {
   toggleItemCompleted,
   updateMousePosition,
 } from './util';
-import { User } from './types';
 
 export default (io: Server): NodeJS.EventEmitter => (
   io.on('connection', (socket: Socket): void => {
