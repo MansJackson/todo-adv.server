@@ -1,1 +1,11 @@
-{"users":[{"name":"mans jackson","email":"mans.jackson@gmail.com","password":"$2b$10$PCXRkuU/CnZWz9i.gqfwqeYcM4fDCYM2BAzug.wLDvazXYkM3ww/6","passwordConf":"apel11sin","id":"546cddbc-e889-4908-a933-37171a49cc63","shared":[]},{"name":"Peter Göback","email":"test@test.com","password":"$2b$10$G6xJ.Le4yjx.ziFknHoRuuqfjr18//h4hwYkMubVd6CV9BNGyo6Z6","passwordConf":"apel11sin","id":"685342fc-38b4-4553-a708-9a29c6759d5f","shared":[]}]}
+{
+  "users": [
+    {
+      "name": "Måns Jackson",
+      "id": "3ad549aa-b5b9-4cdc-8b2e-f6e3e05df213",
+      "password": "$2b$10$0CKhFunjDvm2DVBZdvCQFOWu0HACUrmOPaw1AGOs8.wMiltXlDGg2",
+      "shared": [],
+      "email": "mans.jackson@gmail.com"
+    }
+  ]
+}
