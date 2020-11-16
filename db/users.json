@@ -1,11 +1,5 @@
 {
   "users": [
-    {
-      "name": "Måns Jackson",
-      "id": "3ad549aa-b5b9-4cdc-8b2e-f6e3e05df213",
-      "password": "$2b$10$0CKhFunjDvm2DVBZdvCQFOWu0HACUrmOPaw1AGOs8.wMiltXlDGg2",
-      "shared": [],
-      "email": "mans.jackson@gmail.com"
-    }
+    
   ]
 }
