@@ -42,10 +42,10 @@ app.use(morgan(
 app.use('/auth', authRoutes);
 
 // Check if Authenticated
-app.use((req: Request & { user: User }, res: Response, next: NextFunction) => {
+app.use((req: Request & { user: any }, res: Response, next: NextFunction) => {
   try {
     const cookie = req.cookies.juid;
-    const decoded: User = jwt.verify(cookie, process.env.JWT_SECRET);
+    const decoded = jwt.verify(cookie, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch {
