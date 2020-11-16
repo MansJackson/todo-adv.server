@@ -131,7 +131,7 @@ export const addEditorToList = (listId: string, userId: string): boolean => {
   const newList = {
     ...list,
     editors: [
-      ...list.editors.filter(el => el.id !== userId),
+      ...list.editors.filter((el) => el.id !== userId),
       {
         id: userId,
         initials: getInitials(userToAdd.name),

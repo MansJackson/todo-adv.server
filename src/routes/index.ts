@@ -20,7 +20,7 @@ router.post('/lists', (req: AuthenticatedReq, res: Response) => {
     title: title[0].toUpperCase() + title.substring(1),
     owner: {
       id: req.user.id,
-      initials: getInitials(req.user.name),
+      initials: getInitials(req.user.name).toUpperCase(),
       connected: false,
       mousePosition: { x: 0, y: 0 },
     },
@@ -38,7 +38,7 @@ router.get('/lists', (req: AuthenticatedReq, res: Response) => {
     return;
   }
   const { owned, shared } = lists;
-  res.status(200).json({ owned, shared });
+  res.status(200).json({ owned, shared, cookie: req.cookies.juid });
 });
 
 router.get('/lists/:id', (req: AuthenticatedReq, res: Response) => {
@@ -52,7 +52,7 @@ router.get('/lists/:id', (req: AuthenticatedReq, res: Response) => {
     res.status(401).json({ message: 'You do not have permission to view this list' });
     return;
   }
-  res.status(200).json({ list });
+  res.status(200).json({ list, cookie: req.cookies.juid });
 });
 
 export default router;
