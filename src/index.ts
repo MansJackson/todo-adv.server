@@ -45,7 +45,7 @@ app.use('/auth', authRoutes);
 app.use((req: Request & { user: User }, res: Response, next: NextFunction) => {
   try {
     const cookie = req.cookies.juid;
-    const decoded = jwt.verify(cookie, process.env.JWT_SECRET);
+    const decoded: User = jwt.verify(cookie, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch {
