@@ -20,7 +20,7 @@ import {
 export default (io: Server): NodeJS.EventEmitter => (
   io.on('connection', (socket: Socket): void => {
     // @ts-ignore
-    const cookies = cookie.parse(socket.handshake.query.cookie || '');
+    const cookies = cookie.parse(socket.handshake.query.token || '');
     let userId = '';
     try {
       const decoded: any = jwt.verify(cookies.juid, process.env.JWT_SECRET);
