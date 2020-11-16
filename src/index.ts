@@ -29,7 +29,6 @@ app.use(cors(corsOptions));
 
 // eslint-disable-next-line
 const io = require('socket.io')(server, { cors: { ...corsOptions, cookie: true } });
-
 config(io);
 
 app.use(morgan(
@@ -39,9 +38,6 @@ app.use(morgan(
 
 // No auth required routes
 app.use('/auth', authRoutes);
-app.get('/', (req, res) => {
-  res.send('hejsan');
-})
 
 // Check if Authenticated
 app.use((req: Request & { user: any }, res: Response, next: NextFunction) => {
