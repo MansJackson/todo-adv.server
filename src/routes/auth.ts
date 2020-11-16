@@ -37,7 +37,7 @@ router.post('/register', (req: Request, res: Response) => {
   try {
     const hashedPW = bcrypt.hashSync(password, Number(process.env.SALT_ROUNDS));
     createUser({
-      name, id: uuidv4(), password: hashedPW, shared: [], email
+      name, id: uuidv4(), password: hashedPW, shared: [], email,
     });
     res.status(201).json({ message: 'User created' });
   } catch (err) {
@@ -65,7 +65,7 @@ router.post('/login', (req: Request, res: Response) => {
         cookie,
         {
           maxAge: (360000 * 24 * 7),
-          httpOnly: false,
+          httpOnly: true,
           sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
           secure: process.env.NODE_ENV === 'production',
         },
@@ -78,7 +78,7 @@ router.post('/login', (req: Request, res: Response) => {
 router.get('/logout', (req, res) => {
   res.clearCookie('juid');
   res.status(200).json({ message: 'User signed out succesfully' });
-})
+});
 
 router.post('/email_exists', (req: Request, res: Response) => {
   const { email } = req.body;
