@@ -59,9 +59,8 @@ router.post('/login', (req: Request, res: Response) => {
       res.cookie(
         'juid',
         jwt.sign({ id: user.id, name: user.name, email: user.email }, process.env.JWT_SECRET),
-        { maxAge: 360000 * 24 * 7, httpOnly: false },
+        { maxAge: 360000 * 24 * 7, httpOnly: false, sameSite: "none" },
       );
-      res.setHeader('SameSite', 'none');
       res.status(200).json({ message: 'User signed in succesfully' });
     }
   }
