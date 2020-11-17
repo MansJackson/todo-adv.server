@@ -64,19 +64,28 @@ router.post('/login', (req: Request, res: Response) => {
         'juid',
         cookie,
         {
-          maxAge: (360000 * 24 * 7),
-          httpOnly: true,
+          maxAge: 360000 * 24 * 7,
+          httpOnly: false,
           sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
           secure: process.env.NODE_ENV === 'production',
         },
       );
-      res.status(200).json({ message: 'User signed in succesfully', cookie });
+      res.status(200).json({ message: 'User signed in succesfully' });
     }
   }
 });
 
 router.get('/logout', (req, res) => {
-  res.clearCookie('juid');
+  res.cookie(
+    'juid',
+    '',
+    {
+      maxAge: 0,
+      httpOnly: false,
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    },
+  );
   res.status(200).json({ message: 'User signed out succesfully' });
 });
 

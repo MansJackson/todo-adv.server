@@ -522,3 +522,11 @@
 ::1 - - [16/Nov/2020:21:28:33 +0000] "GET /api/lists HTTP/1.1" /api/lists 304 1.848 ms - -
 ::1 - - [16/Nov/2020:21:28:37 +0000] "GET /auth/logout HTTP/1.1" /auth/logout 304 1.013 ms - -
 ::1 - - [16/Nov/2020:21:28:39 +0000] "GET /auth/valid_cookie HTTP/1.1" /auth/valid_cookie 401 0.513 ms - 28
+::1 - - [17/Nov/2020:16:13:40 +0000] "GET /auth/valid_cookie HTTP/1.1" /auth/valid_cookie 401 4.054 ms - 28
+::1 - - [17/Nov/2020:16:14:31 +0000] "GET /auth/valid_cookie HTTP/1.1" /auth/valid_cookie 401 1.396 ms - 28
+::1 - - [17/Nov/2020:16:14:39 +0000] "POST /auth/login HTTP/1.1" /auth/login 200 101.033 ms - 40
+::1 - - [17/Nov/2020:16:14:39 +0000] "GET /api/lists HTTP/1.1" /api/lists 200 3.623 ms - 481
+::1 - - [17/Nov/2020:16:14:55 +0000] "GET /auth/valid_cookie HTTP/1.1" /auth/valid_cookie 200 1.224 ms - 276
+::1 - - [17/Nov/2020:16:14:55 +0000] "GET /api/lists HTTP/1.1" /api/lists 200 1.749 ms - 481
+::1 - - [17/Nov/2020:16:15:08 +0000] "GET /auth/logout HTTP/1.1" /auth/logout 200 0.799 ms - 41
+::1 - - [17/Nov/2020:16:15:40 +0000] "GET /auth/valid_cookie HTTP/1.1" /auth/valid_cookie 401 0.577 ms - 28
