@@ -33,11 +33,11 @@ export const getInitials = (name: string): string => {
 };
 
 // Validation
-export const isValidEmail = (email: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+export const isValidEmail = (email: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toLowerCase());
 
 export const isValidUser = (user: User & { passwordConf: string }): boolean => {
   if (user.name.length < 3) return false;
-  if (!isValidEmail(user.email)) return false;
+  if (!isValidEmail(user.email.toLowerCase())) return false;
   if (user.password.length < 8) return false;
   if (user.passwordConf !== user.password) return false;
   return true;
@@ -46,7 +46,7 @@ export const isValidUser = (user: User & { passwordConf: string }): boolean => {
 export const emailExists = (email: string): boolean => {
   const db = getFile('users.json');
   if (!db.users) return false;
-  const match = db.users.find((el) => el.email === email);
+  const match = db.users.find((el) => el.email === email.toLowerCase());
   if (match) return true;
   return false;
 };
@@ -79,7 +79,7 @@ export const createUser = (user: User): void => {
 export const getUserByEmail = (email: string): User | false => {
   const db = getFile('users.json');
   if (!db.users) return false;
-  const user = db.users.find((el) => el.email === email);
+  const user = db.users.find((el) => el.email === email.toLowerCase());
   if (user) return user;
   return false;
 };

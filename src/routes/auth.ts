@@ -26,7 +26,7 @@ router.get('/valid_cookie', (req: Request, res: Response) => {
 
 router.post('/register', (req: Request, res: Response) => {
   const { email, password, name } = req.body;
-  if (emailExists(email)) {
+  if (emailExists(email.toLowerCase())) {
     res.status(409).json({ message: 'resource already exists' });
     return;
   }
@@ -37,7 +37,7 @@ router.post('/register', (req: Request, res: Response) => {
   try {
     const hashedPW = bcrypt.hashSync(password, Number(process.env.SALT_ROUNDS));
     createUser({
-      name, id: uuidv4(), password: hashedPW, shared: [], email,
+      name, id: uuidv4(), password: hashedPW, shared: [], email: email.toLowerCase(),
     });
     res.status(201).json({ message: 'User created' });
   } catch (err) {
@@ -47,7 +47,7 @@ router.post('/register', (req: Request, res: Response) => {
 
 router.post('/login', (req: Request, res: Response) => {
   const { email, password } = req.body;
-  const user = getUserByEmail(email);
+  const user = getUserByEmail(email.toLowercase());
 
   if (!user) {
     res.status(401).json({ message: 'Invalid credentials' });
@@ -90,7 +90,7 @@ router.get('/logout', (req, res) => {
 });
 
 router.post('/email_exists', (req: Request, res: Response) => {
-  const { email } = req.body;
+  const email = req.body.email.toLowerCase();
 
   if (!isValidEmail(email)) {
     res.status(400).json({ message: 'invalid Email' });
