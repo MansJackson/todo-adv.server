@@ -18,7 +18,7 @@ router.get('/valid_cookie', (req: Request, res: Response) => {
       res.status(401).json({ message: 'Invalid cookie' });
       return;
     }
-    res.status(200).json({ message: 'Valid cookie', cookie });
+    res.status(200).json({ message: 'Valid cookie', token: cookie });
   } catch (err) {
     res.status(401).json({ message: 'Invalid cookie' });
   }

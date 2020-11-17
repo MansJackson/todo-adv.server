@@ -518,3 +518,7 @@
 ::1 - - [16/Nov/2020:20:55:52 +0000] "GET /api/lists/ed40e809-39db-490e-924d-3623cb7bcdf0 HTTP/1.1" /api/lists/ed40e809-39db-490e-924d-3623cb7bcdf0 200 1.098 ms - 463
 ::1 - - [16/Nov/2020:20:55:54 +0000] "GET /api/lists HTTP/1.1" /api/lists 200 4.771 ms - 481
 ::1 - - [16/Nov/2020:20:55:54 +0000] "GET /api/lists/ed40e809-39db-490e-924d-3623cb7bcdf0 HTTP/1.1" /api/lists/ed40e809-39db-490e-924d-3623cb7bcdf0 200 1.228 ms - 466
+::1 - - [16/Nov/2020:21:28:33 +0000] "GET /auth/valid_cookie HTTP/1.1" /auth/valid_cookie 200 4.314 ms - 277
+::1 - - [16/Nov/2020:21:28:33 +0000] "GET /api/lists HTTP/1.1" /api/lists 304 1.848 ms - -
+::1 - - [16/Nov/2020:21:28:37 +0000] "GET /auth/logout HTTP/1.1" /auth/logout 304 1.013 ms - -
+::1 - - [16/Nov/2020:21:28:39 +0000] "GET /auth/valid_cookie HTTP/1.1" /auth/valid_cookie 401 0.513 ms - 28
