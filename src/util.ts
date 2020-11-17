@@ -71,6 +71,7 @@ export const isListEditor = (userId: string, listId: string): boolean => {
 // User DB
 export const createUser = (user: User): void => {
   const db = getFile('users.json');
+  user.email = user.email.toLowerCase();
   if (db.users) db.users = [...db.users, user];
   else db.users = [user];
   writeFile('users.json', JSON.stringify(db));
