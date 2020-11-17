@@ -70,7 +70,7 @@ router.post('/login', (req: Request, res: Response) => {
           secure: process.env.NODE_ENV === 'production',
         },
       );
-      res.status(200).json({ message: 'User signed in succesfully' });
+      res.status(200).json({ message: 'User signed in succesfully', cookie });
     }
   }
 });
